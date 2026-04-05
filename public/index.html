@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>音声メモ → note構成メーカー</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f7f7f5;
+      --surface: #ffffff;
+      --border: #e5e5e2;
+      --text: #1a1a1a;
+      --text-muted: #888;
+      --accent: #41b883;
+      --accent-dark: #2f9065;
+      --danger: #e05252;
+      --radius: 12px;
+      --shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px 16px 80px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    header h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-top: 6px;
+    }
+
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .step-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    /* ── 録音エリア ── */
+    .record-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .timer {
+      font-size: 2rem;
+      font-variant-numeric: tabular-nums;
+      font-weight: 300;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      min-height: 1em;
+    }
+
+    .record-btn {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      font-size: 1.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 4px 18px rgba(65,184,131,0.38);
+      transition: transform 0.15s, background 0.15s, box-shadow 0.15s;
+    }
+
+    .record-btn:hover:not(:disabled) { transform: scale(1.06); }
+
+    .record-btn.recording {
+      background: var(--danger);
+      box-shadow: 0 4px 18px rgba(224,82,82,0.42);
+      animation: pulse 1.3s infinite;
+    }
+
+    .record-btn:disabled {
+      background: #ccc;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.07); }
+    }
+
+    .record-status {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      min-height: 1.2em;
+      text-align: center;
+    }
+
+    .record-status.active {
+      color: var(--danger);
+      font-weight: 600;
+    }
+
+    .unsupported-msg {
+      display: none;
+      text-align: center;
+      padding: 12px;
+      color: var(--danger);
+      font-size: 0.88rem;
+      background: #fff0f0;
+      border-radius: 8px;
+      border: 1px solid #fcc;
+      margin-top: 8px;
+    }
+
+    /* ── テキストエリア共通 ── */
+    .textarea-wrap {
+      position: relative;
+    }
+
+    textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 0.95rem;
+      line-height: 1.75;
+      resize: vertical;
+      font-family: inherit;
+      color: var(--text);
+      background: var(--bg);
+      transition: border-color 0.15s;
+    }
+
+    textarea:focus { outline: none; border-color: var(--accent); }
+    textarea::placeholder { color: #bbb; }
+
+    textarea.transcript-ta { min-height: 150px; }
+    textarea.prompt-ta {
+      min-height: 260px;
+      font-size: 0.88rem;
+      color: #444;
+      background: #fafaf8;
+    }
+
+    .char-count {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-align: right;
+      margin-top: 4px;
+    }
+
+    /* ── ボタン ── */
+    .row {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 9px 18px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-family: inherit;
+      font-weight: 600;
+      transition: background 0.15s, transform 0.1s, opacity 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn:active:not(:disabled) { transform: scale(0.97); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:hover:not(:disabled) { background: var(--accent-dark); }
+    .btn-primary:disabled { background: #b2dfc9; cursor: not-allowed; }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+    .btn-ghost:hover { background: var(--bg); color: var(--text); }
+
+    .btn-copy {
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .btn-copy:hover { background: var(--accent); color: #fff; }
+    .btn-copy.copied { background: var(--accent); color: #fff; }
+
+    /* ── ヒント ── */
+    .hint {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+      line-height: 1.5;
+    }
+
+    .callout {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      background: #f0faf5;
+      border: 1px solid #c5e8d8;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      color: #2a6e4e;
+      margin-top: 14px;
+    }
+
+    .callout-icon { flex-shrink: 0; font-size: 1rem; }
+
+    /* ── 区切り ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 18px 0;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🎙 音声メモ → note構成メーカー</h1>
+  <p>録音 → 文字起こし → Claude.ai に貼り付けて記事構成を生成</p>
+</header>
+
+<div class="container">
+
+  <!-- STEP 1: 録音 -->
+  <div class="card">
+    <div class="step-label">Step 1 — 録音する</div>
+    <div class="record-center">
+      <div class="timer" id="timer">0:00</div>
+      <button class="record-btn" id="recordBtn" title="録音開始">🎤</button>
+      <div class="record-status" id="recordStatus">ボタンを押して録音開始</div>
+    </div>
+    <div class="unsupported-msg" id="unsupportedMsg">
+      音声認識はChromeまたはEdgeが必要です。<br>それ以外のブラウザではテキストを直接入力してください。
+    </div>
+  </div>
+
+  <!-- STEP 2: 文字起こし確認 -->
+  <div class="card">
+    <div class="step-label">Step 2 — 文字起こしを確認・編集</div>
+    <div class="textarea-wrap">
+      <textarea
+        class="transcript-ta"
+        id="transcript"
+        placeholder="録音するとここに文字が表示されます。直接入力・編集もOKです。"
+        spellcheck="false"
+      ></textarea>
+    </div>
+    <div class="char-count"><span id="charCount">0</span> 文字</div>
+    <div class="row">
+      <button class="btn btn-primary" id="buildBtn" disabled>📝 Claude.ai用プロンプトを作る</button>
+      <button class="btn btn-ghost" id="clearBtn">クリア</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: プロンプト -->
+  <div class="card" id="promptCard" style="display:none">
+    <div class="step-label">Step 3 — Claude.ai に貼り付けて使う</div>
+
+    <div class="textarea-wrap">
+      <textarea
+        class="prompt-ta"
+        id="promptOutput"
+        readonly
+        spellcheck="false"
+      ></textarea>
+    </div>
+
+    <div class="row">
+      <button class="btn btn-copy" id="copyBtn">📋 プロンプトをコピー</button>
+    </div>
+
+    <div class="callout">
+      <span class="callout-icon">💡</span>
+      <span>上のテキストをコピーして <strong><a href="https://claude.ai" target="_blank" rel="noopener" style="color:inherit">claude.ai</a></strong> のチャット欄に貼り付けてください。AIがnote記事の構成（タイトル案・見出し・内容・タグ）を作ってくれます。</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ── 要素 ──
+  const recordBtn    = document.getElementById('recordBtn');
+  const recordStatus = document.getElementById('recordStatus');
+  const timerEl      = document.getElementById('timer');
+  const transcriptEl = document.getElementById('transcript');
+  const charCountEl  = document.getElementById('charCount');
+  const buildBtn     = document.getElementById('buildBtn');
+  const clearBtn     = document.getElementById('clearBtn');
+  const promptCard   = document.getElementById('promptCard');
+  const promptOutput = document.getElementById('promptOutput');
+  const copyBtn      = document.getElementById('copyBtn');
+  const unsupportedMsg = document.getElementById('unsupportedMsg');
+
+  // ── 状態 ──
+  let recognition   = null;
+  let isRecording   = false;
+  let timerInterval = null;
+  let seconds       = 0;
+  let finalText     = '';
+
+  // ── Web Speech API ──
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+    recordBtn.disabled = true;
+    unsupportedMsg.style.display = 'block';
+  } else {
+    recognition = new SpeechRecognition();
+    recognition.lang = 'ja-JP';
+    recognition.continuous = true;
+    recognition.interimResults = true;
+
+    recognition.onresult = (e) => {
+      let interim = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const t = e.results[i][0].transcript;
+        if (e.results[i].isFinal) {
+          finalText += t;
+        } else {
+          interim += t;
+        }
+      }
+      transcriptEl.value = finalText + interim;
+      updateUI();
+    };
+
+    recognition.onerror = (e) => {
+      if (e.error === 'no-speech') return;
+      recordStatus.textContent = 'エラー: ' + e.error + '（マイクの許可を確認してください）';
+      recordStatus.classList.remove('active');
+      stopRecording(false);
+    };
+
+    // 連続録音のため自動再起動
+    recognition.onend = () => {
+      if (isRecording) {
+        try { recognition.start(); } catch (_) {}
+      }
+    };
+  }
+
+  // ── 録音開始 / 停止 ──
+  recordBtn.addEventListener('click', () => {
+    isRecording ? stopRecording(true) : startRecording();
+  });
+
+  function startRecording() {
+    if (!recognition) return;
+    finalText = transcriptEl.value; // 既存テキストを引き継ぐ
+    isRecording = true;
+
+    recordBtn.classList.add('recording');
+    recordBtn.textContent = '⏹';
+    recordStatus.textContent = '録音中… もう一度押すと停止';
+    recordStatus.classList.add('active');
+
+    seconds = 0;
+    timerEl.textContent = '0:00';
+    timerInterval = setInterval(() => {
+      seconds++;
+      const m = Math.floor(seconds / 60);
+      const s = String(seconds % 60).padStart(2, '0');
+      timerEl.textContent = `${m}:${s}`;
+    }, 1000);
+
+    try {
+      recognition.start();
+    } catch (e) {
+      recordStatus.textContent = 'マイクのアクセスを許可してください';
+      recordStatus.classList.remove('active');
+      stopRecording(false);
+    }
+  }
+
+  function stopRecording(updateStatus) {
+    isRecording = false;
+    clearInterval(timerInterval);
+
+    recordBtn.classList.remove('recording');
+    recordBtn.textContent = '🎤';
+
+    if (updateStatus) {
+      recordStatus.textContent = '録音停止。追加録音や編集ができます。';
+      recordStatus.classList.remove('active');
+    }
+
+    if (recognition) {
+      try { recognition.stop(); } catch (_) {}
+    }
+  }
+
+  // ── テキストエリア入力 ──
+  transcriptEl.addEventListener('input', () => {
+    finalText = transcriptEl.value;
+    updateUI();
+  });
+
+  function updateUI() {
+    const len = transcriptEl.value.length;
+    charCountEl.textContent = len;
+    buildBtn.disabled = len === 0;
+  }
+
+  // ── クリア ──
+  clearBtn.addEventListener('click', () => {
+    if (isRecording) stopRecording(true);
+    transcriptEl.value = '';
+    finalText = '';
+    seconds = 0;
+    timerEl.textContent = '0:00';
+    promptCard.style.display = 'none';
+    copyBtn.textContent = '📋 プロンプトをコピー';
+    copyBtn.classList.remove('copied');
+    updateUI();
+  });
+
+  // ── プロンプト生成 ──
+  buildBtn.addEventListener('click', () => {
+    const text = transcriptEl.value.trim();
+    if (!text) return;
+
+    promptOutput.value = buildPrompt(text);
+    promptCard.style.display = 'block';
+    copyBtn.textContent = '📋 プロンプトをコピー';
+    copyBtn.classList.remove('copied');
+    promptCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  function buildPrompt(text) {
+    return `以下は音声メモの書き起こしです。これをnoteで読まれやすい記事の構成に整理してください。
+
+【音声メモ】
+${text}
+
+---
+
+## 出力ルール
+
+### ① タイトル案（3つ）
+読者が「自分ごと」と感じてクリックしたくなるタイトルを3つ考えてください。
+以下のいずれかのパターンを使ってください：
+- 「〇〇なあなたへ」「〇〇で悩んでいませんか？」など読者の悩みに直接語りかける型
+- 「〇〇をやめたら、△△が変わった」など変化・気づきを示す型
+- 「〇〇する3つの方法」「〇〇のコツ」など具体的な実用型
+
+### ② リード文（3〜4文）
+記事の冒頭に置く導入文を書いてください。
+読者が「これは自分の話だ」と感じる書き出しにすること。
+
+### ③ 記事構成（4ブロック固定）
+以下の流れで見出しと内容の骨子を作ってください：
+
+**【共感ブロック】**
+見出し：（読者の悩みや状況をそのまま言語化した見出し）
+骨子：読者が抱えているであろう悩み・不安・疑問を具体的に描写する。「わかる、わかる」と思わせる内容。
+
+**【問題提起ブロック】**
+見出し：（「なぜそうなるのか」を示す見出し）
+骨子：その悩みが生まれる原因・背景・構造を説明する。読者が「だからか！」と腑に落ちる内容。
+
+**【解決策ブロック】**
+見出し：（具体的な方法・アクションを示す見出し）
+骨子：実践できる具体的な解決策・方法を3〜5つ列挙する。抽象論ではなく「明日からできること」レベルで。
+
+**【まとめブロック】**
+見出し：（読者の背中を押す一文を見出しに）
+骨子：記事全体の要点を1〜2文でまとめ、読者が次に取るべき行動を提示する。「やってみよう」と思わせる締め方。
+
+### ④ ハッシュタグ候補（8〜10個）
+noteで検索されやすく、この記事の内容に合ったハッシュタグを挙げてください。
+ジャンル系タグ・悩み系タグ・ライフスタイル系タグをバランスよく混ぜること。
+
+### ⑤ 執筆メモ
+この音声メモで語られた内容のうち、記事に活かせるエピソードや具体例があれば箇条書きでまとめてください。
+
+---
+
+## 出力フォーマット
+
+# タイトル案
+1.
+2.
+3.
+
+# リード文
+（ここに記入）
+
+# 記事構成
+
+## 【共感】（見出し）
+骨子：
+
+## 【問題提起】（見出し）
+骨子：
+
+## 【解決策】（見出し）
+骨子：
+- 方法1：
+- 方法2：
+- 方法3：
+
+## 【まとめ】（見出し）
+骨子：
+
+# ハッシュタグ候補
+#タグ1 #タグ2 #タグ3 ...
+
+# 執筆メモ
+- `;
+  }
+
+  // ── コピー ──
+  copyBtn.addEventListener('click', () => {
+    const text = promptOutput.value;
+    if (!text) return;
+
+    navigator.clipboard.writeText(text).then(() => {
+      showCopied();
+    }).catch(() => {
+      // フォールバック
+      promptOutput.select();
+      document.execCommand('copy');
+      showCopied();
+    });
+  });
+
+  function showCopied() {
+    copyBtn.textContent = '✅ コピーしました！';
+    copyBtn.classList.add('copied');
+    setTimeout(() => {
+      copyBtn.textContent = '📋 プロンプトをコピー';
+      copyBtn.classList.remove('copied');
+    }, 2500);
+  }
+</script>
+</body>
+</html>
