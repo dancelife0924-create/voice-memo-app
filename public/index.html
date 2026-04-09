@@ -3,7 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>音声メモ → note構成メーカー</title>
+  <title>VoiceNote</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="VoiceNote" />
+  <meta name="theme-color" content="#41b883" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='40' fill='%2341b883'/%3E%3Crect x='80' y='32' width='32' height='72' rx='16' fill='white'/%3E%3Cpath d='M56 96c0 22.1 17.9 40 40 40s40-17.9 40-40' stroke='white' stroke-width='8' fill='none' stroke-linecap='round'/%3E%3Crect x='88' y='136' width='16' height='24' rx='4' fill='white'/%3E%3Crect x='68' y='156' width='56' height='8' rx='4' fill='white'/%3E%3C/svg%3E" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -263,7 +269,7 @@
 <body>
 
 <header>
-  <h1>🎙 音声メモ → note構成メーカー</h1>
+  <h1>🎙 VoiceNote</h1>
   <p>録音 → 文字起こし → Claude.ai に貼り付けて記事構成を生成</p>
 </header>
 
@@ -354,35 +360,58 @@
     unsupportedMsg.style.display = 'block';
   } else {
     recognition = new SpeechRecognition();
-    recognition.lang = 'ja-JP';
-    recognition.continuous = true;
+    recognition.lang        = 'ja-JP';
+    recognition.continuous  = true;
     recognition.interimResults = true;
+    recognition.maxAlternatives = 3; // 複数の候補から最高信頼度を選択
 
     recognition.onresult = (e) => {
       let interim = '';
       for (let i = e.resultIndex; i < e.results.length; i++) {
-        const t = e.results[i][0].transcript;
-        if (e.results[i].isFinal) {
-          finalText += t;
+        const result = e.results[i];
+        if (result.isFinal) {
+          // 複数の候補から最も信頼度の高いものを選択
+          let best = result[0];
+          for (let j = 1; j < result.length; j++) {
+            if (result[j].confidence > best.confidence) best = result[j];
+          }
+          finalText += best.transcript;
         } else {
-          interim += t;
+          interim += result[0].transcript;
         }
       }
       transcriptEl.value = finalText + interim;
       updateUI();
     };
 
+    recognition.onnomatch = () => {
+      // 認識できなかった場合は無視して継続
+    };
+
     recognition.onerror = (e) => {
-      if (e.error === 'no-speech') return;
+      if (e.error === 'no-speech' || e.error === 'audio-capture') {
+        // 無音・音声取得の一時エラーは無視して継続
+        return;
+      }
+      if (e.error === 'not-allowed') {
+        recordStatus.textContent = 'マイクへのアクセスが拒否されています。ブラウザの設定を確認してください。';
+        recordStatus.classList.remove('active');
+        stopRecording(false);
+        return;
+      }
       recordStatus.textContent = 'エラー: ' + e.error + '（マイクの許可を確認してください）';
       recordStatus.classList.remove('active');
       stopRecording(false);
     };
 
-    // 連続録音のため自動再起動
+    // 連続録音のため自動再起動（短い遅延を挟んで安定させる）
     recognition.onend = () => {
       if (isRecording) {
-        try { recognition.start(); } catch (_) {}
+        setTimeout(() => {
+          if (isRecording) {
+            try { recognition.start(); } catch (_) {}
+          }
+        }, 100);
       }
     };
   }
