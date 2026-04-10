@@ -65,12 +65,7 @@
       align-items: center;
       gap: 10px;
     }
-
-    .header-left .material-symbols-outlined {
-      color: var(--primary);
-      font-size: 1.5rem;
-    }
-
+    .header-left .material-symbols-outlined { color: var(--primary); font-size: 1.5rem; }
     header h1 {
       font-family: 'Manrope', sans-serif;
       font-size: 1.15rem;
@@ -78,34 +73,27 @@
       letter-spacing: -0.02em;
     }
 
-    .header-right {
-      display: flex;
-      gap: 4px;
-    }
-
     .icon-btn {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: none;
-      background: transparent;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      width: 40px; height: 40px;
+      border-radius: 50%; border: none;
+      background: transparent; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
       color: var(--text-muted);
       transition: background 0.15s;
     }
     .icon-btn:hover { background: var(--surface-low); }
 
-    /* ── Main scroll area ── */
+    /* ── Views ── */
+    .view { display: none; }
+    .view.active { display: block; }
+
+    /* ── Main view ── */
     main {
       max-width: 600px;
       margin: 0 auto;
       padding: 40px 20px 180px;
     }
 
-    /* ── Hint text ── */
     .hint-text {
       text-align: center;
       font-size: 0.82rem;
@@ -115,12 +103,11 @@
       margin-bottom: 48px;
     }
 
-    /* ── Record section ── */
+    /* ── Record ── */
     .record-section {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 0;
       margin-bottom: 56px;
     }
 
@@ -145,65 +132,38 @@
 
     .record-pulse {
       position: absolute;
-      width: 176px;
-      height: 176px;
+      width: 176px; height: 176px;
       border-radius: 50%;
       background: var(--primary);
       opacity: 0.08;
-      transition: opacity 0.3s, transform 0.3s;
     }
 
     .record-btn {
       position: relative;
-      width: 136px;
-      height: 136px;
-      border-radius: 50%;
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      width: 136px; height: 136px;
+      border-radius: 50%; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
       background: linear-gradient(145deg, var(--primary) 0%, var(--primary-dark) 100%);
-      color: var(--primary-on);
       box-shadow: 0 12px 32px rgba(0,108,73,0.3);
       transition: transform 0.2s, box-shadow 0.2s;
     }
-
-    .record-btn .material-symbols-outlined {
-      font-size: 3rem;
-      color: var(--primary-on);
-    }
-
+    .record-btn .material-symbols-outlined { font-size: 3rem; color: var(--primary-on); }
     .record-btn:hover:not(:disabled) {
       transform: scale(1.04);
       box-shadow: 0 16px 40px rgba(0,108,73,0.38);
     }
-
     .record-btn:active:not(:disabled) { transform: scale(0.95); }
-
     .record-btn.recording {
       background: linear-gradient(145deg, var(--danger) 0%, #7a2e2b 100%);
       box-shadow: 0 12px 32px rgba(159,64,61,0.32);
       animation: pulse-anim 1.4s ease-in-out infinite;
     }
-
-    .record-btn.recording ~ .record-pulse,
-    .record-btn-outer.is-recording .record-pulse {
-      opacity: 0.14;
-      animation: pulse-ring 1.4s ease-in-out infinite;
-    }
-
-    .record-btn:disabled {
-      background: var(--surface-high);
-      box-shadow: none;
-      cursor: not-allowed;
-    }
+    .record-btn:disabled { background: var(--surface-high); box-shadow: none; cursor: not-allowed; }
 
     @keyframes pulse-anim {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.04); }
     }
-
     @keyframes pulse-ring {
       0%, 100% { transform: scale(1); opacity: 0.14; }
       50% { transform: scale(1.1); opacity: 0.06; }
@@ -211,20 +171,20 @@
 
     .record-label {
       font-family: 'Manrope', sans-serif;
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--primary);
-      letter-spacing: -0.01em;
+      font-size: 1rem; font-weight: 700;
+      color: var(--primary); letter-spacing: -0.01em;
+    }
+    .record-label.active { color: var(--danger); }
+
+    .unsupported-msg {
+      display: none; text-align: center;
+      padding: 12px 16px; color: var(--danger);
+      font-size: 0.85rem; background: #fff7f6;
+      border-radius: 12px; margin-top: 16px;
     }
 
-    .record-label.active {
-      color: var(--danger);
-    }
-
-    /* ── Text section ── */
-    .text-section {
-      position: relative;
-    }
+    /* ── Text card ── */
+    .text-section { position: relative; }
 
     .text-card {
       background: var(--surface-low);
@@ -232,85 +192,46 @@
       padding: 28px 24px;
       box-shadow: 0 12px 32px rgba(50,50,50,0.04);
     }
-
     .text-card label {
       display: block;
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 16px;
+      font-size: 0.78rem; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: 16px;
     }
-
     textarea {
-      width: 100%;
-      border: none;
-      background: transparent;
+      width: 100%; border: none; background: transparent;
       font-family: 'Inter', sans-serif;
-      font-size: 1rem;
-      line-height: 1.8;
-      color: var(--text);
-      resize: none;
-      outline: none;
+      font-size: 1rem; line-height: 1.8;
+      color: var(--text); resize: none; outline: none;
       min-height: 200px;
     }
-
     textarea::placeholder { color: var(--outline-var); }
-
     .text-card-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 16px;
-      padding-top: 14px;
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 16px; padding-top: 14px;
       border-top: 1px solid rgba(179,178,177,0.15);
     }
+    .char-count { font-size: 0.75rem; font-weight: 500; color: var(--text-muted); }
 
-    .char-count {
-      font-size: 0.75rem;
-      font-weight: 500;
-      color: var(--text-muted);
+    .clear-btn {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: transparent; border: none;
+      color: var(--text-muted); font-family: 'Inter', sans-serif;
+      font-size: 0.82rem; font-weight: 600; cursor: pointer;
+      padding: 4px 8px; border-radius: 8px; transition: color 0.15s, background 0.15s;
     }
+    .clear-btn:hover { background: var(--surface-high); color: var(--text); }
+    .clear-btn .material-symbols-outlined { font-size: 1rem; }
 
-    .saved-label {
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-    }
-
-    /* ── AI chip ── */
     .ai-chip {
-      position: absolute;
-      top: -14px;
-      right: 16px;
-      background: var(--chip-bg);
-      color: var(--chip-text);
-      padding: 5px 12px;
-      border-radius: 9999px;
-      font-size: 0.72rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 4px;
+      position: absolute; top: -14px; right: 16px;
+      background: var(--chip-bg); color: var(--chip-text);
+      padding: 5px 12px; border-radius: 9999px;
+      font-size: 0.72rem; font-weight: 700;
+      display: flex; align-items: center; gap: 4px;
       box-shadow: 0 4px 12px rgba(50,50,50,0.06);
     }
-
     .ai-chip .material-symbols-outlined { font-size: 0.9rem; }
-
-    /* ── Unsupported msg ── */
-    .unsupported-msg {
-      display: none;
-      text-align: center;
-      padding: 12px 16px;
-      color: var(--danger);
-      font-size: 0.85rem;
-      background: #fff7f6;
-      border-radius: 12px;
-      margin-top: 16px;
-    }
 
     /* ── Prompt output ── */
     .prompt-section {
@@ -320,205 +241,210 @@
       padding: 28px 24px;
       box-shadow: 0 12px 32px rgba(50,50,50,0.06);
       display: none;
+    }
+    .prompt-section.visible {
+      display: block;
       animation: slide-up 0.3s ease;
     }
-
-    .prompt-section.visible { display: block; }
-
     @keyframes slide-up {
       from { opacity: 0; transform: translateY(16px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-
     .prompt-section-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      display: flex; align-items: center; justify-content: space-between;
       margin-bottom: 20px;
     }
-
     .prompt-section-title {
       font-family: 'Manrope', sans-serif;
-      font-size: 0.82rem;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
+      font-size: 0.82rem; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
       color: var(--text-muted);
     }
-
     .prompt-ta {
-      width: 100%;
-      border: none;
-      background: var(--surface-low);
-      border-radius: 12px;
-      padding: 16px;
-      font-family: 'Inter', sans-serif;
-      font-size: 0.88rem;
-      line-height: 1.7;
-      color: #444;
-      resize: none;
-      outline: none;
-      min-height: 240px;
+      width: 100%; border: none;
+      background: var(--surface-low); border-radius: 12px;
+      padding: 16px; font-family: 'Inter', sans-serif;
+      font-size: 0.88rem; line-height: 1.7; color: #444;
+      resize: none; outline: none; min-height: 240px;
     }
-
     .callout {
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
-      background: #f0faf5;
-      border-radius: 12px;
-      padding: 14px 16px;
-      font-size: 0.84rem;
-      line-height: 1.65;
-      color: #1f5537;
-      margin-top: 16px;
+      display: flex; gap: 10px; align-items: flex-start;
+      background: #f0faf5; border-radius: 12px;
+      padding: 14px 16px; font-size: 0.84rem;
+      line-height: 1.65; color: #1f5537; margin-top: 16px;
     }
-
     .callout .material-symbols-outlined {
-      flex-shrink: 0;
-      color: var(--primary);
-      font-size: 1.1rem;
-      margin-top: 1px;
+      flex-shrink: 0; color: var(--primary);
+      font-size: 1.1rem; margin-top: 1px;
     }
 
     /* ── Floating CTA ── */
     .cta-wrap {
-      position: fixed;
-      bottom: 76px;
-      left: 0;
-      width: 100%;
-      padding: 0 20px;
-      display: flex;
-      justify-content: center;
-      pointer-events: none;
-      z-index: 40;
+      position: fixed; bottom: 76px; left: 0;
+      width: 100%; padding: 0 20px;
+      display: flex; justify-content: center;
+      pointer-events: none; z-index: 40;
     }
-
     .cta-btn {
       pointer-events: auto;
       background: linear-gradient(145deg, var(--primary) 0%, var(--primary-dark) 100%);
       color: var(--primary-on);
       font-family: 'Manrope', sans-serif;
-      font-size: 1rem;
-      font-weight: 800;
-      padding: 16px 28px;
-      border-radius: 9999px;
-      border: none;
+      font-size: 1rem; font-weight: 800;
+      padding: 16px 28px; border-radius: 9999px; border: none;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      display: flex; align-items: center; gap: 10px;
       box-shadow: 0 8px 28px rgba(0,108,73,0.32);
       transition: transform 0.15s, box-shadow 0.15s, opacity 0.2s;
-      width: 100%;
-      max-width: 400px;
-      justify-content: center;
-      letter-spacing: -0.01em;
+      width: 100%; max-width: 400px;
+      justify-content: center; letter-spacing: -0.01em;
     }
-
     .cta-btn:hover:not(:disabled) {
       transform: scale(1.02);
       box-shadow: 0 12px 36px rgba(0,108,73,0.4);
     }
-
     .cta-btn:active:not(:disabled) { transform: scale(0.97); }
-
-    .cta-btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-      box-shadow: none;
-    }
-
+    .cta-btn:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
     .cta-btn .material-symbols-outlined { font-size: 1.2rem; }
 
-    /* ── Copy button (inside prompt) ── */
     .copy-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 18px;
-      border-radius: 9999px;
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 18px; border-radius: 9999px;
       border: 1.5px solid var(--primary);
-      background: transparent;
-      color: var(--primary);
+      background: transparent; color: var(--primary);
       font-family: 'Inter', sans-serif;
-      font-size: 0.85rem;
-      font-weight: 700;
-      cursor: pointer;
+      font-size: 0.85rem; font-weight: 700; cursor: pointer;
       transition: background 0.15s, color 0.15s;
     }
-
     .copy-btn:hover { background: var(--primary); color: var(--primary-on); }
     .copy-btn.copied { background: var(--primary); color: var(--primary-on); border-color: var(--primary); }
     .copy-btn .material-symbols-outlined { font-size: 1rem; }
 
-    /* ── Clear ghost btn ── */
-    .clear-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      font-family: 'Inter', sans-serif;
-      font-size: 0.82rem;
-      font-weight: 600;
-      cursor: pointer;
-      padding: 4px 8px;
-      border-radius: 8px;
-      transition: color 0.15s, background 0.15s;
-    }
-
-    .clear-btn:hover { background: var(--surface-low); color: var(--text); }
-    .clear-btn .material-symbols-outlined { font-size: 1rem; }
-
     /* ── Bottom nav ── */
     nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      z-index: 50;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
+      position: fixed; bottom: 0; left: 0; width: 100%; z-index: 50;
+      display: flex; justify-content: space-around; align-items: center;
       padding: 10px 16px 20px;
-      background: rgba(255,255,255,0.85);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
       border-top: 1px solid rgba(179,178,177,0.12);
       border-radius: 20px 20px 0 0;
     }
-
     .nav-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-      padding: 6px 20px;
-      border-radius: 9999px;
-      text-decoration: none;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 3px;
+      padding: 8px 24px; border-radius: 9999px;
+      text-decoration: none; cursor: pointer;
       color: var(--text-muted);
-      font-size: 0.68rem;
-      font-weight: 700;
+      font-size: 0.68rem; font-weight: 700;
       letter-spacing: 0.04em;
       transition: color 0.15s, background 0.15s;
-      cursor: pointer;
-      border: none;
-      background: transparent;
+      border: none; background: transparent;
       font-family: 'Inter', sans-serif;
     }
-
     .nav-item .material-symbols-outlined { font-size: 1.35rem; }
-
     .nav-item.active {
       background: var(--primary);
       color: var(--primary-on);
     }
-
     .nav-item.active .material-symbols-outlined {
       font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
     }
+
+    /* ════════════════════════════════
+       ログ ビュー
+    ════════════════════════════════ */
+    .log-view {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 32px 20px 120px;
+    }
+
+    .log-view-title {
+      font-family: 'Manrope', sans-serif;
+      font-size: 1.5rem; font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 6px;
+    }
+    .log-view-sub {
+      font-size: 0.82rem; color: var(--text-muted);
+      margin-bottom: 28px;
+    }
+
+    .log-empty {
+      text-align: center;
+      padding: 64px 24px;
+      color: var(--text-muted);
+    }
+    .log-empty .material-symbols-outlined {
+      font-size: 3rem;
+      color: var(--outline-var);
+      display: block;
+      margin-bottom: 16px;
+    }
+    .log-empty p { font-size: 0.9rem; line-height: 1.7; }
+
+    .log-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .log-card {
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 16px rgba(50,50,50,0.05);
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .log-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(50,50,50,0.08); }
+    .log-card:active { transform: scale(0.99); }
+
+    .log-card-head {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 10px;
+    }
+    .log-date {
+      font-size: 0.72rem; font-weight: 700;
+      color: var(--primary); letter-spacing: 0.04em;
+    }
+    .log-delete {
+      width: 28px; height: 28px;
+      border-radius: 50%; border: none; background: transparent;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      color: var(--outline-var); transition: background 0.15s, color 0.15s;
+      flex-shrink: 0;
+    }
+    .log-delete:hover { background: #fff7f6; color: var(--danger); }
+    .log-delete .material-symbols-outlined { font-size: 1rem; }
+
+    .log-transcript {
+      font-size: 0.9rem; line-height: 1.6;
+      color: var(--text); margin-bottom: 12px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .log-footer {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .log-chars {
+      font-size: 0.72rem; color: var(--text-muted);
+    }
+    .log-restore-btn {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 6px 14px; border-radius: 9999px;
+      background: var(--chip-bg); color: var(--chip-text);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem; font-weight: 700;
+      border: none; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .log-restore-btn:hover { background: #c2f0cb; }
+    .log-restore-btn .material-symbols-outlined { font-size: 0.9rem; }
   </style>
 </head>
 <body>
@@ -529,119 +455,207 @@
     <span class="material-symbols-outlined fill">graphic_eq</span>
     <h1>VoiceNote</h1>
   </div>
-  <div class="header-right">
-    <button class="icon-btn" id="clearBtn" title="クリア">
-      <span class="material-symbols-outlined">delete_sweep</span>
-    </button>
-  </div>
+  <button class="icon-btn" id="clearBtn" title="クリア">
+    <span class="material-symbols-outlined">delete_sweep</span>
+  </button>
 </header>
 
-<main>
-  <!-- ヒントテキスト -->
-  <p class="hint-text">録音または入力して記事の下書きを作成</p>
+<!-- ── 録音ビュー ── -->
+<div class="view active" id="viewRecord">
+  <main>
+    <p class="hint-text">録音または入力して記事の下書きを作成</p>
 
-  <!-- 録音セクション -->
-  <section class="record-section" id="recordSection">
-    <div class="timer" id="timer">0:00</div>
-    <div class="record-btn-outer" id="recordBtnOuter">
-      <div class="record-pulse" id="recordPulse"></div>
-      <button class="record-btn" id="recordBtn" title="録音開始">
-        <span class="material-symbols-outlined fill" id="recordIcon">mic</span>
-      </button>
-    </div>
-    <p class="record-label" id="recordLabel">録音を開始</p>
-    <div class="unsupported-msg" id="unsupportedMsg">
-      音声認識は Chrome または Edge が必要です。<br>それ以外のブラウザではテキストを直接入力してください。
-    </div>
-  </section>
-
-  <!-- テキストセクション -->
-  <section class="text-section">
-    <div class="text-card">
-      <label for="transcript">メモをここに入力...</label>
-      <textarea
-        id="transcript"
-        placeholder="考え、アイデア、構成などを自由に入力してください..."
-        rows="8"
-        spellcheck="false"
-      ></textarea>
-      <div class="text-card-footer">
-        <span class="char-count"><span id="charCount">0</span> 文字</span>
-        <button class="clear-btn" id="clearTextBtn">
-          <span class="material-symbols-outlined">close</span>
-          クリア
+    <section class="record-section">
+      <div class="timer" id="timer">0:00</div>
+      <div class="record-btn-outer">
+        <div class="record-pulse" id="recordPulse"></div>
+        <button class="record-btn" id="recordBtn" title="録音開始">
+          <span class="material-symbols-outlined fill" id="recordIcon">mic</span>
         </button>
       </div>
-    </div>
-    <div class="ai-chip">
-      <span class="material-symbols-outlined fill">auto_awesome</span>
-      AI準備完了
-    </div>
-  </section>
+      <p class="record-label" id="recordLabel">録音を開始</p>
+      <div class="unsupported-msg" id="unsupportedMsg">
+        音声認識は Chrome または Edge が必要です。<br>テキストを直接入力してください。
+      </div>
+    </section>
 
-  <!-- プロンプト出力 -->
-  <section class="prompt-section" id="promptSection">
-    <div class="prompt-section-head">
-      <span class="prompt-section-title">Claude.ai 用プロンプト</span>
-      <button class="copy-btn" id="copyBtn">
-        <span class="material-symbols-outlined">content_copy</span>
-        コピー
-      </button>
-    </div>
-    <textarea class="prompt-ta" id="promptOutput" readonly spellcheck="false"></textarea>
-    <div class="callout">
-      <span class="material-symbols-outlined fill">lightbulb</span>
-      <span>上をコピーして <strong><a href="https://claude.ai" target="_blank" rel="noopener" style="color:inherit">claude.ai</a></strong> に貼り付けると、note記事の構成（タイトル・見出し・タグ）を生成してくれます。</span>
-    </div>
-  </section>
-</main>
+    <section class="text-section">
+      <div class="text-card">
+        <label for="transcript">メモをここに入力...</label>
+        <textarea id="transcript"
+          placeholder="考え、アイデア、構成などを自由に入力してください..."
+          rows="8" spellcheck="false"></textarea>
+        <div class="text-card-footer">
+          <span class="char-count"><span id="charCount">0</span> 文字</span>
+          <button class="clear-btn" id="clearTextBtn">
+            <span class="material-symbols-outlined">close</span>クリア
+          </button>
+        </div>
+      </div>
+      <div class="ai-chip">
+        <span class="material-symbols-outlined fill">auto_awesome</span>
+        AI準備完了
+      </div>
+    </section>
 
-<!-- Floating CTA -->
-<div class="cta-wrap">
-  <button class="cta-btn" id="buildBtn" disabled>
-    note記事用プロンプトを作成
-    <span class="material-symbols-outlined">arrow_forward</span>
-  </button>
+    <section class="prompt-section" id="promptSection">
+      <div class="prompt-section-head">
+        <span class="prompt-section-title">Claude.ai 用プロンプト</span>
+        <button class="copy-btn" id="copyBtn">
+          <span class="material-symbols-outlined">content_copy</span>コピー
+        </button>
+      </div>
+      <textarea class="prompt-ta" id="promptOutput" readonly spellcheck="false"></textarea>
+      <div class="callout">
+        <span class="material-symbols-outlined fill">lightbulb</span>
+        <span>上をコピーして <strong><a href="https://claude.ai" target="_blank" rel="noopener" style="color:inherit">claude.ai</a></strong> に貼り付けると、note記事の構成（タイトル・見出し・タグ）を生成してくれます。</span>
+      </div>
+    </section>
+  </main>
+
+  <!-- Floating CTA -->
+  <div class="cta-wrap">
+    <button class="cta-btn" id="buildBtn" disabled>
+      note記事用プロンプトを作成
+      <span class="material-symbols-outlined">arrow_forward</span>
+    </button>
+  </div>
+</div>
+
+<!-- ── ログビュー ── -->
+<div class="view" id="viewLog">
+  <div class="log-view">
+    <div class="log-view-title">ログ</div>
+    <div class="log-view-sub" id="logSub">保存済みの音声メモ</div>
+    <div id="logList"></div>
+  </div>
 </div>
 
 <!-- Bottom Nav -->
 <nav>
-  <button class="nav-item" id="navMemo" onclick="scrollToText()">
-    <span class="material-symbols-outlined">description</span>
-    メモ
-  </button>
-  <button class="nav-item active" id="navRec" onclick="scrollToRecord()">
+  <button class="nav-item active" id="navRec" onclick="showView('record')">
     <span class="material-symbols-outlined">mic</span>
     録音
   </button>
-  <button class="nav-item" id="navSettings" onclick="showSettings()">
-    <span class="material-symbols-outlined">settings</span>
-    設定
+  <button class="nav-item" id="navLog" onclick="showView('log')">
+    <span class="material-symbols-outlined">history</span>
+    ログ
   </button>
 </nav>
 
 <script>
-  const recordBtn    = document.getElementById('recordBtn');
-  const recordIcon   = document.getElementById('recordIcon');
-  const recordPulse  = document.getElementById('recordPulse');
-  const recordLabel  = document.getElementById('recordLabel');
-  const recordBtnOuter = document.getElementById('recordBtnOuter');
-  const timerEl      = document.getElementById('timer');
-  const transcriptEl = document.getElementById('transcript');
-  const charCountEl  = document.getElementById('charCount');
-  const buildBtn     = document.getElementById('buildBtn');
-  const clearBtn     = document.getElementById('clearBtn');
-  const clearTextBtn = document.getElementById('clearTextBtn');
-  const promptSection= document.getElementById('promptSection');
-  const promptOutput = document.getElementById('promptOutput');
-  const copyBtn      = document.getElementById('copyBtn');
-  const unsupportedMsg = document.getElementById('unsupportedMsg');
+  // ── 要素 ──
+  const recordBtn     = document.getElementById('recordBtn');
+  const recordIcon    = document.getElementById('recordIcon');
+  const recordPulse   = document.getElementById('recordPulse');
+  const recordLabel   = document.getElementById('recordLabel');
+  const timerEl       = document.getElementById('timer');
+  const transcriptEl  = document.getElementById('transcript');
+  const charCountEl   = document.getElementById('charCount');
+  const buildBtn      = document.getElementById('buildBtn');
+  const clearBtn      = document.getElementById('clearBtn');
+  const clearTextBtn  = document.getElementById('clearTextBtn');
+  const promptSection = document.getElementById('promptSection');
+  const promptOutput  = document.getElementById('promptOutput');
+  const copyBtn       = document.getElementById('copyBtn');
+  const unsupportedMsg= document.getElementById('unsupportedMsg');
 
   let recognition   = null;
   let isRecording   = false;
   let timerInterval = null;
   let seconds       = 0;
   let finalText     = '';
+
+  // ── ビュー切替 ──
+  function showView(name) {
+    document.getElementById('viewRecord').classList.toggle('active', name === 'record');
+    document.getElementById('viewLog').classList.toggle('active', name === 'log');
+    document.getElementById('navRec').classList.toggle('active', name === 'record');
+    document.getElementById('navLog').classList.toggle('active', name === 'log');
+    if (name === 'log') renderLogs();
+  }
+
+  // ── LocalStorage ──
+  const STORAGE_KEY = 'vn_logs';
+
+  function loadLogs() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+    catch { return []; }
+  }
+
+  function saveLogs(logs) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(logs));
+  }
+
+  function saveLog(transcript, prompt) {
+    const logs = loadLogs();
+    const now = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    const date = `${now.getFullYear()}/${pad(now.getMonth()+1)}/${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+    logs.unshift({ id: now.getTime(), date, transcript, prompt });
+    if (logs.length > 30) logs.pop();
+    saveLogs(logs);
+  }
+
+  function deleteLog(id) {
+    const logs = loadLogs().filter(l => l.id !== id);
+    saveLogs(logs);
+    renderLogs();
+  }
+
+  function restoreLog(log) {
+    transcriptEl.value = log.transcript;
+    finalText = log.transcript;
+    promptOutput.value = log.prompt;
+    promptSection.classList.add('visible');
+    updateUI();
+    showView('record');
+    setTimeout(() => {
+      document.querySelector('.text-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  }
+
+  // ── ログ描画 ──
+  function renderLogs() {
+    const logs = loadLogs();
+    const container = document.getElementById('logList');
+    const sub = document.getElementById('logSub');
+
+    sub.textContent = logs.length > 0 ? `${logs.length} 件保存済み` : '保存済みの音声メモ';
+
+    if (logs.length === 0) {
+      container.innerHTML = `
+        <div class="log-empty">
+          <span class="material-symbols-outlined">history</span>
+          <p>まだログがありません。<br>プロンプトを作成すると<br>ここに自動保存されます。</p>
+        </div>`;
+      return;
+    }
+
+    container.innerHTML = logs.map(log => {
+      const preview = log.transcript.replace(/\n/g, ' ').trim();
+      return `
+        <div class="log-card" onclick="restoreLog(${JSON.stringify(log).replace(/"/g, '&quot;')})">
+          <div class="log-card-head">
+            <span class="log-date">${log.date}</span>
+            <button class="log-delete" onclick="event.stopPropagation(); deleteLog(${log.id})" title="削除">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+          <div class="log-transcript">${escapeHtml(preview)}</div>
+          <div class="log-footer">
+            <span class="log-chars">${log.transcript.length} 文字</span>
+            <button class="log-restore-btn" onclick="event.stopPropagation(); restoreLog(${JSON.stringify(log).replace(/"/g, '&quot;')})">
+              <span class="material-symbols-outlined">refresh</span>復元
+            </button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
 
   // ── Web Speech API ──
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -651,23 +665,23 @@
     unsupportedMsg.style.display = 'block';
   } else {
     recognition = new SpeechRecognition();
-    recognition.lang           = 'ja-JP';
-    recognition.continuous     = true;
-    recognition.interimResults = true;
+    recognition.lang            = 'ja-JP';
+    recognition.continuous      = true;
+    recognition.interimResults  = true;
     recognition.maxAlternatives = 3;
 
     recognition.onresult = (e) => {
       let interim = '';
       for (let i = e.resultIndex; i < e.results.length; i++) {
-        const result = e.results[i];
-        if (result.isFinal) {
-          let best = result[0];
-          for (let j = 1; j < result.length; j++) {
-            if (result[j].confidence > best.confidence) best = result[j];
+        const r = e.results[i];
+        if (r.isFinal) {
+          let best = r[0];
+          for (let j = 1; j < r.length; j++) {
+            if (r[j].confidence > best.confidence) best = r[j];
           }
           finalText += best.transcript;
         } else {
-          interim += result[0].transcript;
+          interim += r[0].transcript;
         }
       }
       transcriptEl.value = finalText + interim;
@@ -692,9 +706,7 @@
     recognition.onend = () => {
       if (isRecording) {
         setTimeout(() => {
-          if (isRecording) {
-            try { recognition.start(); } catch (_) {}
-          }
+          if (isRecording) { try { recognition.start(); } catch (_) {} }
         }, 100);
       }
     };
@@ -709,17 +721,12 @@
     if (!recognition) return;
     finalText = transcriptEl.value;
     isRecording = true;
-
     recordBtn.classList.add('recording');
     recordIcon.textContent = 'stop';
     recordPulse.style.animation = 'pulse-ring 1.4s ease-in-out infinite';
     recordPulse.style.opacity = '0.14';
     recordLabel.textContent = '録音中… もう一度押すと停止';
     recordLabel.classList.add('active');
-
-    // ナビ更新
-    document.getElementById('navRec').classList.add('active');
-
     seconds = 0;
     timerEl.textContent = '0:00';
     timerInterval = setInterval(() => {
@@ -728,10 +735,8 @@
       const s = String(seconds % 60).padStart(2, '0');
       timerEl.textContent = `${m}:${s}`;
     }, 1000);
-
-    try {
-      recognition.start();
-    } catch (e) {
+    try { recognition.start(); }
+    catch (e) {
       recordLabel.textContent = 'マイクのアクセスを許可してください';
       recordLabel.classList.remove('active');
       stopRecording(false);
@@ -741,23 +746,18 @@
   function stopRecording(updateStatus) {
     isRecording = false;
     clearInterval(timerInterval);
-
     recordBtn.classList.remove('recording');
     recordIcon.textContent = 'mic';
     recordPulse.style.animation = '';
     recordPulse.style.opacity = '0.08';
-
     if (updateStatus) {
       recordLabel.textContent = '録音停止。続けて録音や編集ができます。';
       recordLabel.classList.remove('active');
     }
-
-    if (recognition) {
-      try { recognition.stop(); } catch (_) {}
-    }
+    if (recognition) { try { recognition.stop(); } catch (_) {} }
   }
 
-  // ── テキスト入力 ──
+  // ── テキスト ──
   transcriptEl.addEventListener('input', () => {
     finalText = transcriptEl.value;
     updateUI();
@@ -792,14 +792,18 @@
     updateUI();
   });
 
-  // ── プロンプト生成 ──
+  // ── プロンプト生成 → 自動保存 ──
   buildBtn.addEventListener('click', () => {
     const text = transcriptEl.value.trim();
     if (!text) return;
-
-    promptOutput.value = buildPrompt(text);
+    const prompt = buildPrompt(text);
+    promptOutput.value = prompt;
     promptSection.classList.add('visible');
     resetCopyBtn();
+
+    // ログに自動保存
+    saveLog(text, prompt);
+
     setTimeout(() => {
       promptSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 50);
@@ -908,27 +912,6 @@ noteで検索されやすく、この記事の内容に合ったハッシュタ�
   function resetCopyBtn() {
     copyBtn.innerHTML = '<span class="material-symbols-outlined">content_copy</span> コピー';
     copyBtn.classList.remove('copied');
-  }
-
-  // ── ナビ ──
-  function scrollToRecord() {
-    document.getElementById('recordSection').scrollIntoView({ behavior: 'smooth', block: 'center' });
-    setActiveNav('navRec');
-  }
-
-  function scrollToText() {
-    document.querySelector('.text-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    setActiveNav('navMemo');
-  }
-
-  function showSettings() {
-    setActiveNav('navSettings');
-  }
-
-  function setActiveNav(id) {
-    ['navMemo','navRec','navSettings'].forEach(n => {
-      document.getElementById(n).classList.toggle('active', n === id);
-    });
   }
 </script>
 </body>
